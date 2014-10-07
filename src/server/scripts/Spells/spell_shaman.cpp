@@ -44,6 +44,8 @@ enum ShamanSpells
     SPELL_SHAMAN_GLYPH_OF_HEALING_WAVE          = 55533,
     SPELL_SHAMAN_GLYPH_OF_MANA_TIDE             = 55441,
     SPELL_SHAMAN_GLYPH_OF_THUNDERSTORM          = 62132,
+    SPELL_SHAMAN_HEALING_RAIN                   = 73920,
+    SPELL_SHAMAN_HEALING_RAIN_TICK              = 73921,
     SPELL_SHAMAN_LAVA_BURST                     = 51505,
     SPELL_SHAMAN_LAVA_FLOWS_R1                  = 51480,
     SPELL_SHAMAN_LAVA_FLOWS_TRIGGERED_R1        = 65264,
@@ -640,6 +642,34 @@ class spell_sha_glyph_of_healing_wave : public SpellScriptLoader
         AuraScript* GetAuraScript() const override
         {
             return new spell_sha_glyph_of_healing_wave_AuraScript();
+        }
+};
+
+// Healing Rain 73920
+class spell_sha_healing_rain : public SpellScriptLoader
+{
+    public:
+        spell_sha_healing_rain() : SpellScriptLoader("spell_sha_healing_rain") { }
+
+        class spell_sha_healing_rain_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_sha_healing_rain_AuraScript);
+
+            void OnTick(AuraEffect const* /*aurEff*/)
+            {
+                if (DynamicObject* dynObj = GetCaster()->GetDynObject(73920))
+                    GetCaster()->CastSpell(dynObj->GetPositionX(), dynObj->GetPositionY(), dynObj->GetPositionZ(), 73921, true);
+            }
+
+            void Register()
+            {
+                OnEffectPeriodic += AuraEffectPeriodicFn(spell_sha_healing_rain_AuraScript::OnTick, EFFECT_1, SPELL_AURA_DUMMY);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_sha_healing_rain_AuraScript();
         }
 };
 
@@ -1244,6 +1274,7 @@ void AddSC_shaman_spell_scripts()
     new spell_sha_flame_shock();
     new spell_sha_focused_insight();
     new spell_sha_glyph_of_healing_wave();
+    new spell_sha_healing_rain();
     new spell_sha_healing_stream_totem();
     new spell_sha_heroism();
     new spell_sha_item_lightning_shield();
