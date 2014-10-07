@@ -3745,6 +3745,16 @@ void SpellMgr::LoadSpellInfoCorrections()
                 break;
             // ENDOF ISLE OF CONQUEST SPELLS
             //
+            // FIRELANDS SPELLS
+            //
+            case 99256:  // Torment
+            case 100230: // Torment
+            case 100231: // Torment
+            case 100232: // Torment
+                spellInfo->Attributes |= SPELL_ATTR0_NEGATIVE_1;
+                break;
+            // END OF FIRELANDS SPELLS
+
             default:
                 break;
         }
